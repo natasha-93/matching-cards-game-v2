@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import styled from "styled-components";
 import { shuffle } from "lodash";
-import { urls1, waves } from "./data";
 import Card from "./Card";
+import Sidebar from "./Sidebar";
+import { Difficulty, easy } from "./models/Difficulty";
+import { CardPattern, patterns } from "./models/CardPattern";
+import { ReactComponent as ConfigureIcon } from "./img/configure.svg";
 
 type Card = {
   url: string;
@@ -20,9 +23,30 @@ function createCards(urls: string[]) {
 }
 
 function App() {
-  const [cards, setCards] = useState<Card[]>(createCards(urls1));
-  const [guess, setGuess] = useState<any>([]);
-  const [cardPattern, setCardPattern] = useState(waves);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cards, setCards] = useState<Card[]>([]);
+  const [guess, setGuess] = useState<number[]>([]);
+  const [cardPattern, setCardPattern] = useState<CardPattern>(patterns[0]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [category, setCategory] = useState("nature");
+  const [difficulty, setDifficulty] = useState<Difficulty>(easy);
+
+  const loadCards = (urls: string[]) => {
+    const cards = createCards(urls);
+
+    setCards(cards);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    fetch(
+      `https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${category}&category=${category}&image_type=photo&per_page=${difficulty.size}`
+    )
+      .then((response) => response.json())
+      .then(({ hits }) => loadCards(hits.map((hit: any) => hit.previewURL)));
+  }, [category, difficulty]);
 
   useEffect(() => {
     if (guess.length === 2) {
@@ -46,42 +70,85 @@ function App() {
   }, [guess]);
 
   return (
-    <AppContainer>
-      <h2> Memory Card Game</h2>
-      <CardContainer>
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            url={card.url}
-            id={card.id}
-            isFlipped={guess.includes(card.id) || card.isMatched}
-            cardPattern={cardPattern}
-            onFlip={(id: number) => {
-              console.log(id);
+    <>
+      <AppContainer>
+        <StyledButton
+          onClick={() => setIsSidebarOpen((isSidebarOpen) => !isSidebarOpen)}
+        >
+          <ConfigureIcon />
+        </StyledButton>
 
-              if (guess.length === 0) {
-                setGuess([id]);
-              } else if (guess.length === 1) {
-                setGuess([...guess, id]);
-              }
-            }}
-          />
-        ))}
-      </CardContainer>
-    </AppContainer>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          category={category}
+          onCategoryChange={setCategory}
+          onDifficultyChange={setDifficulty}
+          difficulty={difficulty}
+          onClose={() => setIsSidebarOpen(false)}
+          cardPattern={cardPattern}
+          onPatternChange={setCardPattern}
+        />
+
+        <h2> Memory Card Game</h2>
+
+        <CardContainer>
+          {cards.map((card) => (
+            <Card
+              key={card.id}
+              url={card.url}
+              id={card.id}
+              isFlipped={guess.includes(card.id) || card.isMatched}
+              cardPattern={cardPattern.url}
+              onFlip={(id: number) => {
+                if (guess.length === 0) {
+                  setGuess([id]);
+                } else if (guess.length === 1) {
+                  setGuess([...guess, id]);
+                }
+              }}
+            />
+          ))}
+        </CardContainer>
+      </AppContainer>
+    </>
   );
 }
 
 const AppContainer = styled.div`
-  margin: auto;
   text-align: center;
   padding: 0.5rem;
+  width: 100%;
 `;
 
-const CardContainer = styled.div`
+const StyledButton = styled.button`
+  font-size: 2rem;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+`;
+
+const gridGap = "1rem";
+
+const CardContainer = styled.div`
+  display: grid;
+  margin: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(calc(50% - ${gridGap}), 1fr));
+  grid-gap: ${gridGap};
+
+  @media (min-width: 450px) {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(calc(33% - ${gridGap}), 1fr)
+    );
+  }
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(calc(25% - ${gridGap}), 1fr)
+    );
+  }
 `;
 
 export default App;

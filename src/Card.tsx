@@ -25,21 +25,25 @@ export default function Card({
 
   return (
     <StyledCard onClick={() => onFlip(id)}>
-      <StyledDiv
-        style={{
-          backgroundImage: `url(${cardPattern})`,
+      <div
+        style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+      >
+        <StyledDiv
+          style={{
+            backgroundImage: `url(${cardPattern})`,
 
-          opacity: opacity.interpolate((o) => 1 - Number(o)),
-          transform,
-        }}
-      />
-      <StyledDiv
-        style={{
-          backgroundImage: `url(${url})`,
-          opacity,
-          transform: transform.interpolate((t) => `${t} rotateX(180deg)`),
-        }}
-      />
+            opacity: opacity.interpolate((o) => 1 - Number(o)),
+            transform,
+          }}
+        />
+        <StyledDiv
+          style={{
+            backgroundImage: `url(${url})`,
+            opacity,
+            transform: transform.interpolate((t) => `${t} rotateX(180deg)`),
+          }}
+        />
+      </div>
     </StyledCard>
   );
 }
@@ -55,9 +59,12 @@ const StyledDiv = styled(animated.div)`
 `;
 
 const StyledCard = styled.div`
+  // position: relative;
+  // width: 6rem;
+  // height: 6rem;
+  // cursor: pointer;
+  // margin: 0.5rem;
+  padding-top: 100%;
+  flex: 1;
   position: relative;
-  width: 9rem;
-  height: 9rem;
-  cursor: pointer;
-  margin: 0.5rem;
 `;
