@@ -2,7 +2,7 @@
 * Move to useReducer
 * Show page loader when in loading state
 * Handle errors (what if the api is down or you lose internet?)
-* Make a custom Dropdown (styled) component
+✔️ Make a custom Dropdown (styled) component
 * Make a custom ButtonIcon (styled) component
 * Restart game button 
 * Implement win detection and modal

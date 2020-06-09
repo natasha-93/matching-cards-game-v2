@@ -67,4 +67,5 @@ const StyledCard = styled.div`
   padding-top: 100%;
   flex: 1;
   position: relative;
+  cursor: pointer;
 `;

@@ -38,6 +38,8 @@ function App() {
     setIsLoading(false);
   };
 
+  const loading = <div>Loading...</div>;
+
   useEffect(() => {
     setIsLoading(true);
 
@@ -91,24 +93,28 @@ function App() {
 
         <h2> Memory Card Game</h2>
 
-        <CardContainer>
-          {cards.map((card) => (
-            <Card
-              key={card.id}
-              url={card.url}
-              id={card.id}
-              isFlipped={guess.includes(card.id) || card.isMatched}
-              cardPattern={cardPattern.url}
-              onFlip={(id: number) => {
-                if (guess.length === 0) {
-                  setGuess([id]);
-                } else if (guess.length === 1) {
-                  setGuess([...guess, id]);
-                }
-              }}
-            />
-          ))}
-        </CardContainer>
+        {isLoading === true ? (
+          loading
+        ) : (
+          <CardContainer difficulty={difficulty}>
+            {cards.map((card) => (
+              <Card
+                key={card.id}
+                url={card.url}
+                id={card.id}
+                isFlipped={guess.includes(card.id) || card.isMatched}
+                cardPattern={cardPattern.url}
+                onFlip={(id: number) => {
+                  if (guess.length === 0) {
+                    setGuess([id]);
+                  } else if (guess.length === 1) {
+                    setGuess([...guess, id]);
+                  }
+                }}
+              />
+            ))}
+          </CardContainer>
+        )}
       </AppContainer>
     </>
   );
@@ -131,24 +137,38 @@ const StyledButton = styled.button`
 
 const gridGap = "1rem";
 
-const CardContainer = styled.div`
+const CardContainer = styled.div<{ difficulty: Difficulty }>`
   display: grid;
   margin: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(calc(50% - ${gridGap}), 1fr));
   grid-gap: ${gridGap};
 
-  @media (min-width: 450px) {
+  @media (min-width: 500px) {
     grid-template-columns: repeat(
       auto-fill,
       minmax(calc(33% - ${gridGap}), 1fr)
     );
   }
-  @media (min-width: 900px) {
+
+  ${(p) =>
+    p.difficulty.label === "Medium" &&
+    `
+    @media (min-width: 900px) {
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(calc(25% - ${gridGap}), 1fr)
+      );
+    }
+  `}
+
+  ${(p) =>
+    p.difficulty.label === "Hard" &&
+    `@media (min-width: 900px) {
     grid-template-columns: repeat(
       auto-fill,
-      minmax(calc(25% - ${gridGap}), 1fr)
+      minmax(calc(${100 / 6}% - ${gridGap}), 1fr)
     );
-  }
+  }`}
 `;
 
 export default App;

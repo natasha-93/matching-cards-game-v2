@@ -2,8 +2,10 @@ import React from "react";
 import { animated, useSpring } from "react-spring";
 import {
   Difficulty,
+  easy,
+  medium,
+  hard,
   findDifficulty,
-  DifficultyLabel,
 } from "./models/Difficulty";
 import { CardPattern, patterns, findPattern } from "./models/CardPattern";
 import { categories } from "./data";
@@ -33,7 +35,7 @@ export default function Sidebar({
 }: SidebarProps) {
   // difficulty (number of tiles), theme (dropdown with api), card pattern image
 
-  const difficulties: DifficultyLabel[] = ["Easy", "Medium", "Hard"];
+  const difficulties: Difficulty[] = [easy, medium, hard];
 
   const { x } = useSpring({
     x: isOpen ? 0 : 100,
@@ -50,10 +52,12 @@ export default function Sidebar({
       <DropdownContainer>
         <label>
           Category:
-          <Dropdown
+          <Dropdown<string>
             value={category}
             onChange={onCategoryChange}
             options={categories}
+            getKey={(category) => category}
+            getLabel={(category) => category}
           />
         </label>
       </DropdownContainer>
@@ -61,38 +65,34 @@ export default function Sidebar({
       <DropdownContainer>
         <label>
           Difficulty:
-          {/* <Dropdown
+          <Dropdown<Difficulty>
             value={difficulty.label}
-            onChange={onDifficultyChange}
-            options={difficulties}
-          /> */}
-          <select
-            value={difficulty.label}
-            onChange={(e) => {
-              const difficulty = findDifficulty(e.target.value);
+            onChange={(label) => {
+              const difficulty = findDifficulty(label);
 
               onDifficultyChange(difficulty);
             }}
-          >
-            {difficulties.map((option) => {
-              return (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              );
-            })}
-          </select>
+            options={difficulties}
+            getKey={(difficulty) => difficulty.label}
+            getLabel={(difficulty) => difficulty.label}
+          />
         </label>
       </DropdownContainer>
       <DropdownContainer>
         <label>
           Card Pattern:
-          {/* <Dropdown
+          <Dropdown<CardPattern>
             value={cardPattern.label}
-            onChange={onPatternChange}
+            onChange={(label) => {
+              const pattern = findPattern(label);
+
+              onPatternChange(pattern);
+            }}
             options={patterns}
-          /> */}
-          <select
+            getKey={(pattern) => pattern.label}
+            getLabel={(pattern) => pattern.label}
+          />
+          {/* <select
             value={cardPattern.label}
             onChange={(e) => {
               const pattern = findPattern(e.target.value);
@@ -107,7 +107,7 @@ export default function Sidebar({
                 </option>
               );
             })}
-          </select>
+          </select> */}
         </label>
       </DropdownContainer>
     </SidebarContainer>
