@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useReducer } from "react";
-import styled from "styled-components";
 import { shuffle } from "lodash";
+import styled from "styled-components";
+
 import Card from "./Card";
 import Sidebar from "./Sidebar";
 import PageLoader from "./PageLoader";
+import IconButton from "./IconButton";
+import WinModal from "./WinModal";
 import { Difficulty, easy } from "./models/Difficulty";
 import { CardPattern, patterns } from "./models/CardPattern";
 import { ReactComponent as ConfigureIcon } from "./img/configure.svg";
@@ -73,7 +76,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, cards: action.payload.cards, isLoading: false };
     }
     case "LOAD_CARDS_START": {
-      return { ...state, isLoading: true };
+      return { ...state, isLoading: true, cards: [], guess: [] };
     }
     case "FLIP_CARD": {
       const { id } = action.payload;
@@ -140,9 +143,9 @@ function App() {
     dispatch({ type: "LOAD_CARDS", payload: { cards } });
   };
 
-  const loading = <div>Loading...</div>;
+  const isWon = cards.length > 0 && cards.every((card) => card.isMatched);
 
-  useEffect(() => {
+  const fetchUrls = () => {
     dispatch({ type: "LOAD_CARDS_START" });
 
     fetch(
@@ -150,6 +153,10 @@ function App() {
     )
       .then((response) => response.json())
       .then(({ hits }) => loadCards(hits.map((hit: any) => hit.previewURL)));
+  };
+
+  useEffect(() => {
+    fetchUrls();
   }, [category, difficulty]);
 
   useEffect(() => {
@@ -172,11 +179,9 @@ function App() {
   return (
     <>
       <AppContainer>
-        <StyledButton
-          onClick={() => setIsSidebarOpen((isSidebarOpen) => !isSidebarOpen)}
-        >
+        <IconButton onClick={() => setIsSidebarOpen(true)}>
           <ConfigureIcon />
-        </StyledButton>
+        </IconButton>
 
         <Sidebar
           isOpen={isSidebarOpen}
@@ -197,7 +202,9 @@ function App() {
 
         <h2> Memory Card Game</h2>
 
-        {isLoading === true ? (
+        {isWon && <WinModal onRestart={fetchUrls} cardPattern={cardPattern} />}
+
+        {isLoading ? (
           <PageLoader cardPattern={cardPattern} />
         ) : (
           <CardContainer difficulty={difficulty}>
@@ -226,15 +233,6 @@ const AppContainer = styled.div`
   text-align: center;
   padding: 0.5rem;
   width: 100%;
-`;
-
-const StyledButton = styled.button`
-  font-size: 2rem;
-  display: flex;
-  border: none;
-  background: none;
-  outline: none;
-  cursor: pointer;
 `;
 
 const gridGap = "1rem";

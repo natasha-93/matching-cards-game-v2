@@ -11,6 +11,7 @@ import { CardPattern, patterns, findPattern } from "./models/CardPattern";
 import { categories } from "./data";
 import styled from "styled-components";
 import Dropdown from "./Dropdown";
+import IconButton from "./IconButton";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -48,7 +49,7 @@ export default function Sidebar({
         transform: x.interpolate((x) => `translateX(${x * -1}%)`),
       }}
     >
-      <StyledButton onClick={(e) => onClose()}>x</StyledButton>
+      <IconButton onClick={() => onClose()}>x</IconButton>
 
       <DropdownContainer>
         <label>
@@ -110,15 +111,6 @@ const SidebarContainer = styled(animated.div)<{ pattern: CardPattern }>`
   padding: 1rem;
   // backdrop-filter: blur(0.4rem);
   background: ${(p) => p.pattern.gradient};
-`;
-
-const StyledButton = styled.button`
-  background: none;
-  border: none;
-  outline: none;
-  font-size: 1.5rem;
-  display: flex;
-  cursor: pointer;
 `;
 
 const DropdownContainer = styled.div`
