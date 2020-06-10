@@ -6,8 +6,8 @@
 ✔️ Restart game button 
 ✔️ Implement win detection and modal
 ✔️ Set background color to be complementary of gradient hue
+✔️ Create a useGame hook
 
 * Handle errors (what if the api is down or you lose internet?)
-* Create a useGame hook
 * Create a theme context
 * Maybe add sound
