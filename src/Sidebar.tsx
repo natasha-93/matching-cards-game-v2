@@ -92,22 +92,6 @@ export default function Sidebar({
             getKey={(pattern) => pattern.label}
             getLabel={(pattern) => pattern.label}
           />
-          {/* <select
-            value={cardPattern.label}
-            onChange={(e) => {
-              const pattern = findPattern(e.target.value);
-
-              onPatternChange(pattern);
-            }}
-          >
-            {patterns.map((option) => {
-              return (
-                <option key={option.label} value={option.label}>
-                  {option.label}
-                </option>
-              );
-            })}
-          </select> */}
         </label>
       </DropdownContainer>
     </SidebarContainer>
@@ -136,5 +120,5 @@ const StyledButton = styled.button`
 `;
 
 const DropdownContainer = styled.div`
-  margin: 3rem auto;
+  margin: 5rem;
 `;

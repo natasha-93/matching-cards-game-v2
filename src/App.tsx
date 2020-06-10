@@ -22,26 +22,127 @@ function createCards(urls: string[]) {
   return shuffle(cards);
 }
 
+type AppState = {
+  isLoading: boolean;
+  cards: Card[];
+  guess: number[];
+  cardPattern: CardPattern;
+  category: string;
+  difficulty: Difficulty;
+};
+
+type AppAction =
+  | {
+      type: "REVEAL_CARD";
+      payload: { url: string };
+    }
+  | {
+      type: "LOAD_CARDS";
+      payload: { cards: Card[] };
+    }
+  | {
+      type: "LOAD_CARDS_START";
+    }
+  | {
+      type: "FLIP_CARD";
+      payload: { id: number };
+    }
+  | {
+      type: "CHECK_MATCH";
+    }
+  | {
+      type: "CLEAR_GUESS";
+    }
+  | {
+      type: "CHANGE_CATEGORY";
+      payload: { category: string };
+    }
+  | {
+      type: "CHANGE_DIFFICULTY";
+      payload: { difficulty: Difficulty };
+    }
+  | {
+      type: "CHANGE_PATTERN";
+      payload: { cardPattern: CardPattern };
+    };
+
+function appReducer(state: AppState, action: AppAction): AppState {
+  switch (action.type) {
+    case "LOAD_CARDS": {
+      return { ...state, cards: action.payload.cards, isLoading: false };
+    }
+    case "LOAD_CARDS_START": {
+      return { ...state, isLoading: true };
+    }
+    case "FLIP_CARD": {
+      const { id } = action.payload;
+      let guess = state.guess;
+
+      if (guess.length === 1) {
+        guess = [...guess, id];
+      } else {
+        guess = [id];
+      }
+
+      return { ...state, guess };
+    }
+    case "REVEAL_CARD": {
+      const { url } = action.payload;
+
+      const cards = state.cards.map((card, i) => {
+        if (card.url !== url) return card;
+
+        return { ...card, isMatched: true };
+      });
+
+      return { ...state, cards };
+    }
+    case "CLEAR_GUESS": {
+      return { ...state, guess: [] };
+    }
+    case "CHANGE_CATEGORY": {
+      const { category } = action.payload;
+      return { ...state, category };
+    }
+    case "CHANGE_DIFFICULTY": {
+      const { difficulty } = action.payload;
+      return { ...state, difficulty };
+    }
+    case "CHANGE_PATTERN": {
+      const { cardPattern } = action.payload;
+      return { ...state, cardPattern };
+    }
+    default: {
+      throw new Error(`Unknown action: ${action.type}`);
+    }
+  }
+}
+
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [cards, setCards] = useState<Card[]>([]);
-  const [guess, setGuess] = useState<number[]>([]);
-  const [cardPattern, setCardPattern] = useState<CardPattern>(patterns[0]);
+  const [
+    { isLoading, cards, guess, cardPattern, category, difficulty },
+    dispatch,
+  ] = useReducer(appReducer, {
+    isLoading: false,
+    cards: [],
+    guess: [],
+    cardPattern: patterns[0],
+    category: "nature",
+    difficulty: easy,
+  });
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [category, setCategory] = useState("nature");
-  const [difficulty, setDifficulty] = useState<Difficulty>(easy);
 
   const loadCards = (urls: string[]) => {
     const cards = createCards(urls);
 
-    setCards(cards);
-    setIsLoading(false);
+    dispatch({ type: "LOAD_CARDS", payload: { cards } });
   };
 
   const loading = <div>Loading...</div>;
 
   useEffect(() => {
-    setIsLoading(true);
+    dispatch({ type: "LOAD_CARDS_START" });
 
     fetch(
       `https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${category}&category=${category}&image_type=photo&per_page=${difficulty.size}`
@@ -52,20 +153,16 @@ function App() {
 
   useEffect(() => {
     if (guess.length === 2) {
-      const cardOneIndex = cards.findIndex((card) => card.id === guess[0]);
-      const cardTwoIndex = cards.findIndex((card) => card.id === guess[1]);
-      if (cards[cardOneIndex].url === cards[cardTwoIndex].url) {
-        setCards((prevCards) => {
-          const newCards = [...prevCards];
-          newCards[cardOneIndex].isMatched = true;
-          newCards[cardTwoIndex].isMatched = true;
+      const cardOne = cards.find((card) => card.id === guess[0]) as Card;
+      const cardTwo = cards.find((card) => card.id === guess[1]) as Card;
+      const isMatch = cardOne.url === cardTwo.url;
 
-          return newCards;
-        });
-        setGuess([]);
+      if (isMatch) {
+        dispatch({ type: "REVEAL_CARD", payload: { url: cardOne.url } });
+        dispatch({ type: "CLEAR_GUESS" });
       } else {
         setTimeout(() => {
-          setGuess([]);
+          dispatch({ type: "CLEAR_GUESS" });
         }, 1000);
       }
     }
@@ -83,12 +180,18 @@ function App() {
         <Sidebar
           isOpen={isSidebarOpen}
           category={category}
-          onCategoryChange={setCategory}
-          onDifficultyChange={setDifficulty}
+          onCategoryChange={(category) => {
+            dispatch({ type: "CHANGE_CATEGORY", payload: { category } });
+          }}
+          onDifficultyChange={(difficulty) => {
+            dispatch({ type: "CHANGE_DIFFICULTY", payload: { difficulty } });
+          }}
           difficulty={difficulty}
           onClose={() => setIsSidebarOpen(false)}
           cardPattern={cardPattern}
-          onPatternChange={setCardPattern}
+          onPatternChange={(cardPattern) => {
+            dispatch({ type: "CHANGE_PATTERN", payload: { cardPattern } });
+          }}
         />
 
         <h2> Memory Card Game</h2>
@@ -105,10 +208,8 @@ function App() {
                 isFlipped={guess.includes(card.id) || card.isMatched}
                 cardPattern={cardPattern.url}
                 onFlip={(id: number) => {
-                  if (guess.length === 0) {
-                    setGuess([id]);
-                  } else if (guess.length === 1) {
-                    setGuess([...guess, id]);
+                  if (guess.length !== 2) {
+                    dispatch({ type: "FLIP_CARD", payload: { id } });
                   }
                 }}
               />

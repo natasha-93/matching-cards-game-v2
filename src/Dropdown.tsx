@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 type DropdownProps<T = string> = {
   value: string;
@@ -16,7 +17,7 @@ export default function Dropdown<T>({
   getKey,
 }: DropdownProps<T>) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)}>
+    <StyledDropdown value={value} onChange={(e) => onChange(e.target.value)}>
       {options.map((option) => {
         return (
           <option key={getKey(option)} value={getLabel(option)}>
@@ -24,6 +25,13 @@ export default function Dropdown<T>({
           </option>
         );
       })}
-    </select>
+    </StyledDropdown>
   );
 }
+
+const StyledDropdown = styled.select`
+  text-transform: capitalize;
+  width: 7rem;
+  margin: 0.5rem;
+  text-align: center;
+`;

@@ -24,7 +24,13 @@ export default function Card({
   });
 
   return (
-    <StyledCard onClick={() => onFlip(id)}>
+    <StyledCard
+      onClick={() => {
+        if (!isFlipped) {
+          onFlip(id);
+        }
+      }}
+    >
       <div
         style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
       >
