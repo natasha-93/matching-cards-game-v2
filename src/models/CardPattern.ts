@@ -1,5 +1,6 @@
 export type CardPattern = {
   label: string;
+  bgColor: string;
   gradient: string;
   url: string;
 };
@@ -7,6 +8,7 @@ export type CardPattern = {
 export const patterns: CardPattern[] = [
   {
     label: "waves",
+    bgColor: "#dff4ff",
     gradient: `linear-gradient(
       111deg,
       rgba(62, 165, 238, 1) 13%,
@@ -17,30 +19,35 @@ export const patterns: CardPattern[] = [
   },
   {
     label: "geometric",
+    bgColor: "#ffe9ed",
     gradient: `linear-gradient(291deg, rgba(255,154,224,0.8) 13%, rgba(252,63,195,1) 91%);`,
     url:
       "https://images.pexels.com/photos/430207/pexels-photo-430207.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   },
   {
     label: "brick",
+    bgColor: "#f9e7c6",
     gradient: `linear-gradient( 111deg, rgb(241, 144, 67, 1) 13%, rgb(255, 195, 87, 0.8) 91% );`,
     url:
       "https://images.pexels.com/photos/220152/pexels-photo-220152.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   },
   {
     label: "tile",
+    bgColor: "#e6e6ff",
     gradient: `linear-gradient( 111deg, rgba(34, 58, 232, 1) 13%, rgba(84, 136, 253, 0.8) 91% )`,
     url:
       "https://images.pexels.com/photos/242616/pexels-photo-242616.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   },
   {
     label: "sky",
+    bgColor: "#cbd9f9",
     gradient: `linear-gradient( 111deg, rgba(1, 91, 255, 1) 13%, rgba(0, 137, 255, 0.8) 91% )`,
     url:
       "https://images.pexels.com/photos/53594/blue-clouds-day-fluffy-53594.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
   },
   {
     label: "sunset",
+    bgColor: "#efd2d2",
     gradient: `linear-gradient( 111deg, rgb(237, 80, 90, 1) 13%, rgb(246, 171, 50, 0.8) 91% )`,
     url:
       "https://images.pexels.com/photos/1126384/pexels-photo-1126384.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",

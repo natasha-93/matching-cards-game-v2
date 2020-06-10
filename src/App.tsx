@@ -178,7 +178,7 @@ function App() {
 
   return (
     <>
-      <AppContainer>
+      <AppContainer bg={cardPattern.bgColor}>
         <IconButton onClick={() => setIsSidebarOpen(true)}>
           <ConfigureIcon />
         </IconButton>
@@ -229,10 +229,11 @@ function App() {
   );
 }
 
-const AppContainer = styled.div`
+const AppContainer = styled.div<{ bg: string }>`
   text-align: center;
   padding: 0.5rem;
   width: 100%;
+  background: ${(p) => p.bg};
 `;
 
 const gridGap = "1rem";

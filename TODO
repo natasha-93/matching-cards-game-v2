@@ -6,3 +6,4 @@
 * Make a custom ButtonIcon (styled) component
 * Restart game button 
 ✔️ Implement win detection and modal
+✔️ Set background color to be complementary of gradient hue
