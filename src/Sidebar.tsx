@@ -45,7 +45,7 @@ export default function Sidebar({
     <SidebarContainer
       pattern={cardPattern}
       style={{
-        transform: x.interpolate((x) => `translate3d(${x * -1}%, 0, 0)`),
+        transform: x.interpolate((x) => `translateX(${x * -1}%)`),
       }}
     >
       <StyledButton onClick={(e) => onClose()}>x</StyledButton>
@@ -108,7 +108,7 @@ const SidebarContainer = styled(animated.div)<{ pattern: CardPattern }>`
   max-width: 100%;
   z-index: 5;
   padding: 1rem;
-  backdrop-filter: blur(0.4rem);
+  // backdrop-filter: blur(0.4rem);
   background: ${(p) => p.pattern.gradient};
 `;
 

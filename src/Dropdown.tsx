@@ -33,5 +33,14 @@ const StyledDropdown = styled.select`
   text-transform: capitalize;
   width: 7rem;
   margin: 0.5rem;
+  padding: 0.2rem 0.4rem;
   text-align: center;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+  outline: none;
+  cursor: pointer;
+  border: none;
+  appearance: none;
 `;
