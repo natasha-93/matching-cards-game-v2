@@ -43,6 +43,7 @@ export default function Sidebar({
 
   return (
     <SidebarContainer
+      pattern={cardPattern}
       style={{
         transform: x.interpolate((x) => `translate3d(${x * -1}%, 0, 0)`),
       }}
@@ -98,16 +99,17 @@ export default function Sidebar({
   );
 }
 
-const SidebarContainer = styled(animated.div)`
+const SidebarContainer = styled(animated.div)<{ pattern: CardPattern }>`
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   width: 20rem;
   max-width: 100%;
-  background-color: yellow;
   z-index: 5;
   padding: 1rem;
+  backdrop-filter: blur(0.4rem);
+  background: ${(p) => p.pattern.gradient};
 `;
 
 const StyledButton = styled.button`
@@ -121,4 +123,7 @@ const StyledButton = styled.button`
 
 const DropdownContainer = styled.div`
   margin: 5rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
 `;

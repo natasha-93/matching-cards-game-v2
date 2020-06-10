@@ -1,6 +1,6 @@
 ✔️ Use css-grid/media queries to ensure that grid is always evenly distributed
 ✔️ Move to useReducer
-* Show page loader when in loading state
+✔️ Show page loader when in loading state
 * Handle errors (what if the api is down or you lose internet?)
 ✔️ Make a custom Dropdown (styled) component
 * Make a custom ButtonIcon (styled) component

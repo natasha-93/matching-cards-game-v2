@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { shuffle } from "lodash";
 import Card from "./Card";
 import Sidebar from "./Sidebar";
+import PageLoader from "./PageLoader";
 import { Difficulty, easy } from "./models/Difficulty";
 import { CardPattern, patterns } from "./models/CardPattern";
 import { ReactComponent as ConfigureIcon } from "./img/configure.svg";
@@ -197,7 +198,7 @@ function App() {
         <h2> Memory Card Game</h2>
 
         {isLoading === true ? (
-          loading
+          <PageLoader cardPattern={cardPattern} />
         ) : (
           <CardContainer difficulty={difficulty}>
             {cards.map((card) => (
@@ -240,9 +241,10 @@ const gridGap = "1rem";
 
 const CardContainer = styled.div<{ difficulty: Difficulty }>`
   display: grid;
-  margin: 1rem;
+  margin: auto;
   grid-template-columns: repeat(auto-fill, minmax(calc(50% - ${gridGap}), 1fr));
   grid-gap: ${gridGap};
+  max-width: 750px;
 
   @media (min-width: 500px) {
     grid-template-columns: repeat(
@@ -265,6 +267,7 @@ const CardContainer = styled.div<{ difficulty: Difficulty }>`
   ${(p) =>
     p.difficulty.label === "Hard" &&
     `@media (min-width: 900px) {
+      max-width: 1200px;
     grid-template-columns: repeat(
       auto-fill,
       minmax(calc(${100 / 6}% - ${gridGap}), 1fr)
