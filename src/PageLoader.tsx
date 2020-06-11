@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createPortal } from "react-dom";
 import styled from "styled-components";
 import { CardPattern } from "./models/CardPattern";
+import { ThemeContext } from "./context/theme";
 
-type PageLoaderProps = {
-  cardPattern: CardPattern;
-};
+export default function PageLoader() {
+  const { theme } = useContext(ThemeContext);
 
-export default function PageLoader({ cardPattern }: PageLoaderProps) {
   return createPortal(
     <Overlay>
-      {/* <GridLoader size={50} color={"black"} loading={true} /> */}
-      <LoadingIcon cardPattern={cardPattern}>
+      <LoadingIcon cardPattern={theme}>
         <div />
         <div />
         <div />

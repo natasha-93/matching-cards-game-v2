@@ -1,22 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSpring, animated } from "react-spring";
 import styled from "styled-components";
+import { ThemeContext } from "./context/theme";
 
 type CardProps = {
   url: string;
   id: number;
   isFlipped: boolean;
   onFlip: (id: number) => void;
-  cardPattern: string;
 };
 
-export default function Card({
-  url,
-  id,
-  isFlipped,
-  onFlip,
-  cardPattern,
-}: CardProps) {
+export default function Card({ url, id, isFlipped, onFlip }: CardProps) {
+  const { theme } = useContext(ThemeContext);
+
   const { transform, opacity } = useSpring({
     opacity: isFlipped ? 1 : 0,
     transform: `perspective(600px) rotateX(${isFlipped ? 180 : 0}deg)`,
@@ -36,7 +32,7 @@ export default function Card({
       >
         <StyledDiv
           style={{
-            backgroundImage: `url(${cardPattern})`,
+            backgroundImage: `url(${theme.url})`,
 
             opacity: opacity.interpolate((o) => 1 - Number(o)),
             transform,
@@ -65,11 +61,6 @@ const StyledDiv = styled(animated.div)`
 `;
 
 const StyledCard = styled.div`
-  // position: relative;
-  // width: 6rem;
-  // height: 6rem;
-  // cursor: pointer;
-  // margin: 0.5rem;
   padding-top: 100%;
   flex: 1;
   position: relative;

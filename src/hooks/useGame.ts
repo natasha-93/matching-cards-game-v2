@@ -1,5 +1,4 @@
 import { CardType } from "../models/Card";
-import { CardPattern, patterns } from "../models/CardPattern";
 import { Difficulty, easy } from "../models/Difficulty";
 import { useReducer } from "react";
 
@@ -7,7 +6,6 @@ type AppState = {
   isLoading: boolean;
   cards: CardType[];
   guess: number[];
-  cardPattern: CardPattern;
   category: string;
   difficulty: Difficulty;
 };
@@ -41,10 +39,6 @@ type AppAction =
   | {
       type: "CHANGE_DIFFICULTY";
       payload: { difficulty: Difficulty };
-    }
-  | {
-      type: "CHANGE_PATTERN";
-      payload: { cardPattern: CardPattern };
     };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -89,10 +83,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
       const { difficulty } = action.payload;
       return { ...state, difficulty };
     }
-    case "CHANGE_PATTERN": {
-      const { cardPattern } = action.payload;
-      return { ...state, cardPattern };
-    }
     default: {
       throw new Error(`Unknown action: ${action.type}`);
     }
@@ -104,7 +94,6 @@ export default function useGame(): [AppState, React.Dispatch<AppAction>] {
     isLoading: false,
     cards: [],
     guess: [],
-    cardPattern: patterns[0],
     category: "nature",
     difficulty: easy,
   });

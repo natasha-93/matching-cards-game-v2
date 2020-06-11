@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { animated, useSpring } from "react-spring";
 import {
   Difficulty,
@@ -12,6 +12,7 @@ import { categories } from "./data";
 import styled from "styled-components";
 import Dropdown from "./Dropdown";
 import IconButton from "./IconButton";
+import { ThemeContext } from "./context/theme";
 
 type SidebarProps = {
   isOpen: boolean;
@@ -20,8 +21,6 @@ type SidebarProps = {
   difficulty: Difficulty;
   onDifficultyChange: (difficulty: Difficulty) => void;
   onClose: () => void;
-  cardPattern: CardPattern;
-  onPatternChange: (pattern: CardPattern) => void;
 };
 
 export default function Sidebar({
@@ -31,12 +30,12 @@ export default function Sidebar({
   difficulty,
   onDifficultyChange,
   onClose,
-  cardPattern,
-  onPatternChange,
 }: SidebarProps) {
   // difficulty (number of tiles), theme (dropdown with api), card pattern image
 
   const difficulties: Difficulty[] = [easy, medium, hard];
+
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const { x } = useSpring({
     x: isOpen ? 0 : 100,
@@ -44,7 +43,7 @@ export default function Sidebar({
 
   return (
     <SidebarContainer
-      pattern={cardPattern}
+      pattern={theme}
       style={{
         transform: x.interpolate((x) => `translateX(${x * -1}%)`),
       }}
@@ -84,11 +83,11 @@ export default function Sidebar({
         <label>
           Card Pattern:
           <Dropdown<CardPattern>
-            value={cardPattern.label}
+            value={theme.label}
             onChange={(label) => {
               const pattern = findPattern(label);
 
-              onPatternChange(pattern);
+              setTheme(pattern);
             }}
             options={patterns}
             getKey={(pattern) => pattern.label}

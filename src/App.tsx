@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { shuffle } from "lodash";
 import styled from "styled-components";
 
@@ -11,6 +11,7 @@ import { Difficulty } from "./models/Difficulty";
 import { CardType } from "./models/Card";
 import { ReactComponent as ConfigureIcon } from "./img/configure.svg";
 import useGame from "./hooks/useGame";
+import { ThemeContext } from "./context/theme";
 
 function createCards(urls: string[]) {
   const cards: CardType[] = [];
@@ -22,8 +23,10 @@ function createCards(urls: string[]) {
 }
 
 function App() {
+  const { theme: cardPattern, setTheme } = useContext(ThemeContext);
+
   const [
-    { isLoading, cards, guess, cardPattern, category, difficulty },
+    { isLoading, cards, guess, category, difficulty },
     dispatch,
   ] = useGame();
 
@@ -86,18 +89,14 @@ function App() {
           }}
           difficulty={difficulty}
           onClose={() => setIsSidebarOpen(false)}
-          cardPattern={cardPattern}
-          onPatternChange={(cardPattern) => {
-            dispatch({ type: "CHANGE_PATTERN", payload: { cardPattern } });
-          }}
         />
 
         <h2> Memory Card Game</h2>
 
-        {isWon && <WinModal onRestart={fetchUrls} cardPattern={cardPattern} />}
+        {isWon && <WinModal onRestart={fetchUrls} />}
 
         {isLoading ? (
-          <PageLoader cardPattern={cardPattern} />
+          <PageLoader />
         ) : (
           <CardContainer difficulty={difficulty}>
             {cards.map((card) => (
@@ -106,7 +105,6 @@ function App() {
                 url={card.url}
                 id={card.id}
                 isFlipped={guess.includes(card.id) || card.isMatched}
-                cardPattern={cardPattern.url}
                 onFlip={(id: number) => {
                   if (guess.length !== 2) {
                     dispatch({ type: "FLIP_CARD", payload: { id } });

@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { createPortal } from "react-dom";
 import Button from "./Button";
 import styled from "styled-components";
 import { CardPattern } from "./models/CardPattern";
+import { ThemeContext } from "./context/theme";
 
 type WinModalProps = {
   onRestart: () => void;
-  cardPattern: CardPattern;
 };
 
-export default function WinModal({ onRestart, cardPattern }: WinModalProps) {
+export default function WinModal({ onRestart }: WinModalProps) {
+  const { theme } = useContext(ThemeContext);
+
   return createPortal(
     <StyledModalBackground>
-      <StyledModalContent cardPattern={cardPattern}>
+      <StyledModalContent cardPattern={theme}>
         <p>Congrats!</p>
         <Button onClick={(e) => onRestart()}>New Game</Button>
       </StyledModalContent>
