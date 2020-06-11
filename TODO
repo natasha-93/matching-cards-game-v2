@@ -9,5 +9,5 @@
 ✔️ Create a useGame hook
 
 * Handle errors (what if the api is down or you lose internet?)
-* Create a theme context
+✔️ Create a theme context
 * Maybe add sound
